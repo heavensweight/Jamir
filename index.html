@@ -78,6 +78,13 @@
         .admin-panel button:hover {
             background-color: #005c2b;
         }
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +115,8 @@
             <input type="text" id="productName" placeholder="Product Name" />
             <input type="number" id="productPrice" placeholder="Price" />
             <input type="number" id="productStock" placeholder="Stock" />
+            <input type="file" id="productImage" accept="image/*" onchange="previewImage(event)" />
+            <img id="imagePreview" class="image-preview" src="" alt="Image Preview" />
             <button onclick="addProduct()">Add Product</button>
             <hr />
             <h3>Edit or Remove Products</h3>
@@ -127,12 +136,13 @@
     <footer>
         <p>&copy; 2025 Jamir Trading | All rights reserved</p>
     </footer>
+
     <script>
         // Initial Products List
         let products = [
-            { name: 'Qora (Cow Feed)', price: 25.00, stock: 50, id: 1 },
-            { name: 'Vushi (Protein Mix)', price: 35.00, stock: 30, id: 2 },
-            { name: 'Cow Supplement', price: 15.00, stock: 20, id: 3 }
+            { name: 'Qora (Cow Feed)', price: 25.00, stock: 50, id: 1, imageUrl: 'https://via.placeholder.com/250x150?text=Qora' },
+            { name: 'Vushi (Protein Mix)', price: 35.00, stock: 30, id: 2, imageUrl: 'https://via.placeholder.com/250x150?text=Vushi' },
+            { name: 'Cow Supplement', price: 15.00, stock: 20, id: 3, imageUrl: 'https://via.placeholder.com/250x150?text=Cow+Supplement' }
         ];
 
         let cart = [];
@@ -145,21 +155,28 @@
             products.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.innerHTML = 
-                    <img src="https://via.placeholder.com/250x150?text=${product.name}" alt="${product.name}">
+                productCard.innerHTML = `
+                    <img src="${product.imageUrl}" alt="${product.name}">
                     <h2>${product.name}</h2>
                     <p class="price">$${product.price.toFixed(2)} per bag</p>
                     <p class="stock">In Stock: ${product.stock} bags</p>
                     <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
-                ;
+                `;
                 productList.appendChild(productCard);
             });
         }
 
         // Add product to cart
         function addToCart(productName, productPrice) {
-            cart.push({ productName, productPrice });
-            alert(${productName} added to cart.);
+            const product = products.find(p => p.name === productName);
+            if (product && product.stock > 0) {
+                cart.push({ productName, productPrice });
+                product.stock--; // Decrease stock after adding to cart
+                alert(`${productName} added to cart.`);
+                displayProducts(); // Re-display products to update stock
+            } else {
+                alert('This product is out of stock.');
+            }
         }
 
         // Admin login function
@@ -192,13 +209,36 @@
             const name = document.getElementById('productName').value;
             const price = parseFloat(document.getElementById('productPrice').value);
             const stock = parseInt(document.getElementById('productStock').value);
+            const image = document.getElementById('productImage').files[0];
+            let imageUrl = '';
 
+            if (image) {
+                // Create an object URL for the selected image
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    imageUrl = reader.result;
+                    createProduct(name, price, stock, imageUrl);
+                };
+                reader.readAsDataURL(image);
+            } else {
+                imageUrl = 'https://via.placeholder.com/250x150?text=No+Image'; // Default placeholder if no image uploaded
+                createProduct(name, price, stock, imageUrl);
+            }
+        }
+
+        // Create product after image is loaded
+        function createProduct(name, price, stock, imageUrl) {
             if (name && !isNaN(price) && !isNaN(stock)) {
-                const newProduct = { name, price, stock, id: products.length + 1 };
+                const newProduct = { name, price, stock, id: products.length + 1, imageUrl };
                 products.push(newProduct);
-                alert(${name} added successfully!);
+                alert(`${name} added successfully!`);
                 displayProducts();
                 displayAdminProducts();
+                document.getElementById('productName').value = '';
+                document.getElementById('productPrice').value = '';
+                document.getElementById('productStock').value = '';
+                document.getElementById('productImage').value = '';  // Reset image input
+                document.getElementById('imagePreview').src = '';  // Reset image preview
             } else {
                 alert('Please provide valid product details.');
             }
@@ -217,8 +257,21 @@
             }
         }
 
+        // Preview uploaded image
+        function previewImage(event) {
+            const imagePreview = document.getElementById('imagePreview');
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    imagePreview.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         // Print Slip
-      function printSlip() {
+        function printSlip() {
             const slip = document.getElementById('slip');
             const printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Receipt</title></head><body>');
