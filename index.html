@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jamir Trading - Cow Food Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #007A3D;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+        .products, .admin-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .product-card, .admin-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .product-card img, .admin-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .product-card h2, .admin-card h2 {
+            font-size: 20px;
+            color: #333;
+            margin-top: 15px;
+        }
+        .price {
+            font-size: 18px;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .stock {
+            font-size: 14px;
+            color: #dc3545;
+            margin-top: 10px;
+        }
+        footer {
+            background-color: #007A3D;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 40px;
+        }
+        .admin-panel {
+            margin-top: 30px;
+        }
+        .admin-panel input, .admin-panel select {
+            padding: 8px;
+            margin: 5px;
+            width: 80%;
+        }
+        .admin-panel button {
+            background-color: #007A3D;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .admin-panel button:hover {
+            background-color: #005c2b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Welcome to Jamir Trading!</h1>
+        <p>Your one-stop shop for quality cow food products.</p>
+    </header>
+
+    <div class="container">
+        <!-- Product Section for Customers -->
+        <h2>Our Products</h2>
+        <div class="products" id="productList">
+            <!-- Products will be listed here dynamically -->
+        </div>
+
+        <!-- Admin Login Section (Visible only if not logged in) -->
+        <div id="adminLogin" class="admin-login">
+            <h3>Admin Login</h3>
+            <input type="password" id="adminPassword" placeholder="Enter password" />
+            <button onclick="adminLogin()">Login</button>
+        </div>
+
+        <!-- Admin Panel (Visible only if logged in) -->
+        <div id="adminPanel" class="admin-panel" style="display: none;">
+            <h3>Admin Panel</h3>
+            <input type="text" id="productName" placeholder="Product Name" />
+            <input type="number" id="productPrice" placeholder="Price" />
+            <input type="number" id="productStock" placeholder="Stock" />
+            <button onclick="addProduct()">Add Product</button>
+            <hr />
+            <h3>Edit or Remove Products</h3>
+            <select id="productSelect"></select>
+            <button onclick="removeProduct()">Remove Product</button>
+        </div>
+
+        <!-- Slip Section for Customers -->
+        <div class="slip" id="slip">
+            <h3>Jamir Trading - Receipt</h3>
+            <ul class="product-list" id="productListSlip"></ul>
+            <button onclick="printSlip()">Print Slip</button>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Jamir Trading | All rights reserved</p>
+    </footer>
+    <script>
+        // Initial Products List
+        let products = [
+            { name: 'Qora (Cow Feed)', price: 25.00, stock: 50, id: 1 },
+            { name: 'Vushi (Protein Mix)', price: 35.00, stock: 30, id: 2 },
+            { name: 'Cow Supplement', price: 15.00, stock: 20, id: 3 }
+        ];
+
+        let cart = [];
+        let adminLoggedIn = false;
+
+        // Display products dynamically for customers
+        function displayProducts() {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = 
+                    <img src="https://via.placeholder.com/250x150?text=${product.name}" alt="${product.name}">
+                    <h2>${product.name}</h2>
+                    <p class="price">$${product.price.toFixed(2)} per bag</p>
+                    <p class="stock">In Stock: ${product.stock} bags</p>
+                    <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                ;
+                productList.appendChild(productCard);
+            });
+        }
+
+        // Add product to cart
+        function addToCart(productName, productPrice) {
+            cart.push({ productName, productPrice });
+            alert(${productName} added to cart.);
+        }
+
+        // Admin login function
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'jamirjeda') {  // Change password here
+                adminLoggedIn = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                displayAdminProducts();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        // Display products for admin to edit/remove
+        function displayAdminProducts() {
+            const productSelect = document.getElementById('productSelect');
+            productSelect.innerHTML = '';
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+        }
+
+        // Add new product for admin
+        function addProduct() {
+            const name = document.getElementById('productName').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+
+            if (name && !isNaN(price) && !isNaN(stock)) {
+                const newProduct = { name, price, stock, id: products.length + 1 };
+                products.push(newProduct);
+                alert(${name} added successfully!);
+                displayProducts();
+                displayAdminProducts();
+            } else {
+                alert('Please provide valid product details.');
+            }
+        }
+
+        // Remove product for admin
+        function removeProduct() {
+            const selectedProductId = parseInt(document.getElementById('productSelect').value);
+            if (selectedProductId) {
+                products = products.filter(product => product.id !== selectedProductId);
+                alert('Product removed successfully!');
+                displayProducts();
+                displayAdminProducts();
+            } else {
+                alert('Please select a product to remove.');
+            }
+        }
+
+        // Print Slip
+      function printSlip() {
+            const slip = document.getElementById('slip');
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Receipt</title></head><body>');
+            printWindow.document.write(slip.innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Initialize by displaying products
+        displayProducts();
+    </script>
+</body>
+</html>
