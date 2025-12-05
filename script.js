@@ -166,41 +166,54 @@ function removeFromCart(productName) {
 =====================================
   UPDATED EPSON RECEIPT PRINT SYSTEM  
 =====================================
-*/
+*/ 
+let invoiceCounter = 1000; // starting invoice number
 
 function printCart() {
     let total = 0;
 
+    // Get current date & time
+    const now = new Date();
+    const dateStr = now.toLocaleDateString();
+    const timeStr = now.toLocaleTimeString();
+
     let receipt = "";
-    receipt += "        JAMIR TRADING\n";
-    receipt += "--------------------------------------\n";
+    receipt += "      JAMIR TRADING\n";
+    receipt += "  Cow Food & Supplies\n";
+    receipt += " Address: 123 Farm Lane\n";
+    receipt += "      City, Country\n";
+    receipt += "------------------------------\n";
+    receipt += `Invoice #: ${invoiceCounter}\n`;
+    receipt += `Date: ${dateStr}  Time: ${timeStr}\n`;
+    receipt += "------------------------------\n";
     receipt += "Name              Price  Qty   Total\n";
-    receipt += "--------------------------------------\n";
+    receipt += "------------------------------\n";
 
     cart.forEach(item => {
         const lineTotal = item.productPrice * item.qty;
         total += lineTotal;
 
         receipt +=
-            item.productName.padEnd(16).substring(0, 16) +
+            item.productName.padEnd(16).substring(0,16) +
             item.productPrice.toFixed(2).toString().padStart(7) +
             String(item.qty).padStart(5) +
             lineTotal.toFixed(2).padStart(8) +
             "\n";
     });
 
-    receipt += "--------------------------------------\n";
+    receipt += "------------------------------\n";
     receipt += "Grand Total:              " + total.toFixed(2) + "\n";
-    receipt += "--------------------------------------\n";
-    receipt += "\nThank you!\n";
+    receipt += "------------------------------\n";
+    receipt += "   Thank you for your visit!\n\n";
 
-    // Create printing window
+    // Increment invoice for next print
+    invoiceCounter++;
+
+    // Open print window
     const printWindow = window.open('', '', 'width=400,height=600');
-
     printWindow.document.write("<pre>" + receipt + "</pre>");
-    printWindow.document.close();  // VERY IMPORTANT
+    printWindow.document.close();
 
-    // Wait for load → then print
     printWindow.onload = function () {
         printWindow.focus();
         printWindow.print();
