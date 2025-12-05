@@ -15,11 +15,11 @@
     </header>
 
     <div class="container">
-        <!-- Product Section for Customers -->
+
         <h2>Our Products</h2>
         <div class="products" id="productList"></div>
 
-        <!-- Admin Login Section -->
+        <!-- Admin Login -->
         <div id="adminLogin" class="admin-login">
             <h3>Admin Login</h3>
             <input type="password" id="adminPassword" placeholder="Enter password" />
@@ -34,15 +34,19 @@
             <input type="number" id="productStock" placeholder="Stock" />
             <input type="file" id="productImage" accept="image/*" onchange="previewImage(event)" />
             <img id="imagePreview" class="image-preview" src="" alt="Image Preview" />
-            <button onclick="addProduct()">Add Product</button>
 
+            <button onclick="addProduct()">Add Product</button>
             <hr />
+
             <h3>Edit or Remove Products</h3>
             <select id="productSelect"></select>
+
             <button onclick="removeProduct()">Remove Product</button>
+            <button onclick="loadProductForEdit()">Edit Product</button>
+            <button onclick="saveProductChanges()">Save Changes</button>
         </div>
 
-        <!-- Cart Sidebar -->
+        <!-- Cart -->
         <div id="cartSidebar">
             <h3>Your Cart</h3>
             <div id="cartItemsList"></div>
@@ -50,16 +54,15 @@
             <button onclick="toggleCart()">Close Cart</button>
         </div>
 
-        <!-- Open Cart Button -->
         <button id="openCartBtn" onclick="toggleCart()">View Cart</button>
 
-        <!-- Added to Cart Message -->
         <div class="added-to-cart-message" id="addedToCartMessage">
             Product added to cart!
         </div>
+
     </div>
 
-    <!-- Footer Section -->
+    <!-- Footer -->
     <footer>
         <p>&copy; 2025 Jamir Trading | All rights reserved</p>
     </footer>
