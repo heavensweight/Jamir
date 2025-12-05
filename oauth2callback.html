@@ -1,0 +1,32 @@
+<script>
+  // This function extracts the authorization code from the URL
+  function getQueryParameter(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Check if the 'code' parameter exists in the URL
+  const code = getQueryParameter('code');
+  if (code) {
+    // Use the authorization code to get an access token from Google
+    fetch('/get-access-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: code }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Store the access token or use it for API calls
+      console.log('Access Token:', data.access_token);
+      alert('Authentication successful!');
+    })
+    .catch(error => {
+      console.error('Error during authentication:', error);
+      alert('Something went wrong!');
+    });
+  } else {
+    alert('No code found in the URL');
+  }
+</script>
