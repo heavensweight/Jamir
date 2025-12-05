@@ -23,24 +23,39 @@
     // Initialize Google API client with your Client ID
     function initClient() {
       const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      
+      const code = params.get('code'); // Extract the authorization code from the URL
+
       if (code) {
         // Your OAuth Client ID (from Google Cloud Console)
         const clientId = '613073681590-ks3lg73f0t0a90j1h8al2dltn206mvcd.apps.googleusercontent.com';
-        
-        // Initialize the OAuth client
-        gapi.auth2.init({
-          client_id: clientId
-        }).then(() => {
-          // Exchange the authorization code for an access token
-          gapi.auth2.getAuthInstance().grantOfflineAccess().then(response => {
-            const accessToken = response.code;
-            console.log('Access Token:', accessToken);
+
+        // Send the authorization code to your backend to exchange it for an access token
+        fetch('/exchange-code', {  // Assuming this is the endpoint on your backend
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code: code, clientId: clientId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.access_token) {
+            // Successfully obtained access token
+            console.log('Access Token:', data.access_token);
             alert('Authentication successful!');
-            // Store the access token locally (optional)
-            localStorage.setItem('access_token', accessToken);
-          });
+
+            // Store the access token in localStorage
+            localStorage.setItem('access_token', data.access_token);
+
+            // Optionally, redirect to the main page or wherever you need
+            window.location.href = '/';  // Redirect to home page (or desired page)
+          } else {
+            alert('Failed to retrieve access token.');
+          }
+        })
+        .catch(error => {
+          console.error('Error during authentication:', error);
+          alert('Something went wrong!');
         });
       } else {
         alert('No authorization code found in the URL.');
