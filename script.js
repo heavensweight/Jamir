@@ -1,35 +1,30 @@
 /* =====================================================
-FULL UPDATED JAVASCRIPT FOR FIREBASE FIRESTORE
+   POLISHED & FIXED JAVASCRIPT (script.js)
+   (Integrates Firestore successfully)
 =====================================================
 */
 
 // --- GLOBAL VARIABLES & FIRESTORE SETUP ---
-// Accessing 'productsCollection' globally from the index.html setup
 const productsCollection = window.productsCollection;
 
-let products = []; // Array to hold products loaded from Firestore
+let products = [];
 let cart = [];
 let adminLoggedIn = false;
 let invoiceCounter = 1000;
-const ADMIN_PASSWORD = "jamirjeda"; // Keep the password here for consistency
+const ADMIN_PASSWORD = "jamirjeda";
 
 
 // --- FIRESTORE DATA HANDLING & DISPLAY ---
 
-/**
- * Loads products from Firestore in real-time using onSnapshot.
- */
 function displayProducts() {
     const productList = document.getElementById('productList');
     productList.innerHTML = 'Loading products...';
 
-    // Listen for real-time changes to the 'products' collection
     productsCollection.onSnapshot(snapshot => {
         products = [];
         productList.innerHTML = '';
         
         snapshot.forEach(doc => {
-            // Get data and the unique Firestore document ID (required for updates/removals)
             products.push({ ...doc.data(), firebaseKey: doc.id }); 
         });
 
@@ -63,9 +58,6 @@ function displayProducts() {
 
 // --- ADMIN FUNCTIONS ---
 
-/**
- * Adds a new product using Firestore's .add() method.
- */
 function addProduct() {
     const name = document.getElementById('productName').value;
     const price = parseFloat(document.getElementById('productPrice').value);
@@ -83,11 +75,9 @@ function addProduct() {
         price: price,
         stock: stock,
         imageUrl: imageUrl,
-        // CRITICAL: Send adminKey to pass security rules
         adminKey: ADMIN_PASSWORD 
     };
 
-    // Use .add() to create a new document with an auto-generated ID
     productsCollection.add(newProduct)
         .then(() => {
             alert("Product Added Successfully!");
@@ -99,9 +89,6 @@ function addProduct() {
         });
 }
 
-/**
- * Populates the product selection dropdown in the admin panel.
- */
 function displayAdminProducts() {
     const select = document.getElementById('productSelect');
     select.innerHTML = '';
@@ -113,15 +100,12 @@ function displayAdminProducts() {
 
     products.forEach((product) => {
         const option = document.createElement('option');
-        option.value = product.firebaseKey; // Use Firestore document ID as the value
+        option.value = product.firebaseKey;
         option.textContent = `${product.name} (Stock: ${product.stock})`;
         select.appendChild(option);
     });
 }
 
-/**
- * Removes a product using Firestore's .delete() method.
- */
 function removeProduct() {
     const firebaseKey = document.getElementById('productSelect').value;
     if (!firebaseKey) {
@@ -129,23 +113,16 @@ function removeProduct() {
         return;
     }
     
-    // Use .doc(key).delete() to remove the document
     productsCollection.doc(firebaseKey).delete()
         .then(() => {
             alert(`Product removed successfully!`);
         })
         .catch(error => {
-            // Note: If deletion fails due to the security rule, you would need to adjust the rule 
-            // to allow 'delete' separately, or ensure the adminKey is somehow included.
-            // We use a simplified rule that allows 'write' which covers delete.
             console.error("Error removing product:", error);
             alert("Error removing product. Check console.");
         });
 }
 
-/**
- * Loads selected product data into the admin input fields for editing.
- */
 function loadProductForEdit() {
     const firebaseKey = document.getElementById('productSelect').value;
     if (!firebaseKey) {
@@ -162,9 +139,6 @@ function loadProductForEdit() {
     }
 }
 
-/**
- * Saves edited product data by updating Firestore using .update().
- */
 function saveProductChanges() {
     const firebaseKey = document.getElementById('productSelect').value;
     if (!firebaseKey) {
@@ -176,7 +150,6 @@ function saveProductChanges() {
         name: document.getElementById('productName').value,
         price: parseFloat(document.getElementById('productPrice').value),
         stock: parseInt(document.getElementById('productStock').value),
-        // CRITICAL: Send adminKey again for write access
         adminKey: ADMIN_PASSWORD 
     };
 
@@ -188,7 +161,6 @@ function saveProductChanges() {
         updatedData.imageUrl = existingProduct ? existingProduct.imageUrl : "https://via.placeholder.com/250x150?text=No+Image";
     }
     
-    // Use .update() on the specific document
     productsCollection.doc(firebaseKey).update(updatedData)
         .then(() => {
             alert("Product Updated Successfully!");
@@ -199,13 +171,11 @@ function saveProductChanges() {
         });
 }
 
-// Preview Admin Image
 function previewImage(event) {
     const output = document.getElementById('imagePreview');
     output.src = URL.createObjectURL(event.target.files[0]);
 }
 
-// Clears the Admin form fields
 function clearAdminForm() {
     document.getElementById('productName').value = '';
     document.getElementById('productPrice').value = '';
@@ -217,9 +187,6 @@ function clearAdminForm() {
 
 // --- CART & CUSTOMER FUNCTIONS ---
 
-/**
- * Adds an item to the local cart and updates the stock in Firestore.
- */
 function addToCart(firebaseKey) {
     const product = products.find(p => p.firebaseKey === firebaseKey);
 
@@ -240,7 +207,6 @@ function addToCart(firebaseKey) {
         });
     }
 
-    // Update stock in Firestore (sends adminKey to pass rule)
     productsCollection.doc(firebaseKey).update({ 
         stock: product.stock - 1,
         adminKey: ADMIN_PASSWORD
@@ -249,16 +215,12 @@ function addToCart(firebaseKey) {
     showAddedToCartMessage();
 }
 
-/**
- * Removes an item from the local cart and returns the stock to Firestore.
- */
 function removeFromCart(firebaseKey) {
     const itemIndex = cart.findIndex(item => item.firebaseKey === firebaseKey);
     if (itemIndex > -1) {
         const item = cart[itemIndex];
         const product = products.find(p => p.firebaseKey === firebaseKey);
 
-        // Return stock in Firestore (sends adminKey to pass rule)
         if (product) {
             productsCollection.doc(firebaseKey).update({
                 stock: product.stock + item.qty,
@@ -271,21 +233,18 @@ function removeFromCart(firebaseKey) {
     }
 }
 
-// Added to cart message
 function showAddedToCartMessage() {
     const msg = document.getElementById('addedToCartMessage');
     msg.classList.add('show');
     setTimeout(() => msg.classList.remove('show'), 2000);
 }
 
-// Toggle Cart
 function toggleCart() {
     const cartSidebar = document.getElementById('cartSidebar');
     cartSidebar.classList.toggle('open');
     updateCartSidebar();
 }
 
-// Update Cart Sidebar (Local data display)
 function updateCartSidebar() {
     const cartItemsList = document.getElementById('cartItemsList');
     cartItemsList.innerHTML = '';
@@ -314,18 +273,12 @@ function updateCartSidebar() {
     cartItemsList.appendChild(totalDiv);
 }
 
-/*  
-=====================================
-  RECEIPT PRINT SYSTEM (Local)
-=====================================
-*/ 
-
 function printCart() {
     if (cart.length === 0) {
         alert("Your cart is empty. Nothing to print.");
         return;
     }
-
+    // ... (rest of printCart logic remains the same) ...
     let total = 0;
     const now = new Date();
     const dateStr = now.toLocaleDateString();
@@ -377,16 +330,23 @@ function printCart() {
 }
 
 
-// --- ADMIN LOGIN ---
+// --- ADMIN LOGIN FIX ---
 
+/**
+ * FIXED: Ensures displayProducts is called to update the Admin select dropdown.
+ */
 function adminLogin() {
     const pass = document.getElementById('adminPassword').value;
     if (pass === ADMIN_PASSWORD) {
         adminLoggedIn = true;
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'grid';
-        displayAdminProducts();
         document.getElementById('adminPassword').value = ''; 
+        
+        // --- THE CRITICAL FIX ---
+        displayProducts(); // Forces a refresh, which calls displayAdminProducts()
+        // ------------------------
+
     } else {
         alert("Incorrect password!");
     }
