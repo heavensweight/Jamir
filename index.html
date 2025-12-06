@@ -73,11 +73,10 @@
 
 
     <script type="module">
-        // 1. Import the necessary functions from the SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore, collection } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // 2. Your web app's Firebase configuration (USING YOUR PROVIDED KEYS)
+        // Your specific project configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBI4kJYYrSrOTYQ1hp1kuNonk992EAugH4",
             authDomain: "jamir-90f6a.firebaseapp.com",
@@ -88,9 +87,8 @@
             measurementId: "G-NFKQTL3X55"
         };
 
-        // 3. Initialize Firebase services and attach them to the window object
         const app = initializeApp(firebaseConfig);
-        // Define global variables for use in script.js
+        // Expose necessary Firestore objects globally for script.js
         window.db = getFirestore(app);
         window.productsCollection = collection(window.db, 'products'); 
     </script>
