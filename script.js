@@ -1,45 +1,37 @@
 /* =====================================================
-FULL UPDATED JAVASCRIPT FOR FIREBASE REALTIME DATABASE
+FULL UPDATED JAVASCRIPT FOR FIREBASE FIRESTORE
 =====================================================
 */
 
-// --- GLOBAL VARIABLES & FIREBASE SETUP ---
-// NOTE: firebaseConfig, 'db', and 'productsRef' must be defined in the 
-// <script> block of your index.html file *before* this script runs.
+// --- GLOBAL VARIABLES & FIRESTORE SETUP ---
+// Accessing 'productsCollection' globally from the index.html setup
+const productsCollection = window.productsCollection;
 
-// Reference to the Firebase 'products' node (Assumed to be defined in index.html)
-// const productsRef = db.ref('products'); 
-
-let products = []; // Array to hold products loaded from Firebase
+let products = []; // Array to hold products loaded from Firestore
 let cart = [];
 let adminLoggedIn = false;
 let invoiceCounter = 1000;
 const ADMIN_PASSWORD = "jamirjeda"; // Keep the password here for consistency
 
 
-// --- FIREBASE DATA HANDLING & DISPLAY ---
+// --- FIRESTORE DATA HANDLING & DISPLAY ---
 
 /**
- * Loads products from Firebase in real-time.
- * This function handles rendering the customer products and populating the admin dropdown.
+ * Loads products from Firestore in real-time using onSnapshot.
  */
 function displayProducts() {
     const productList = document.getElementById('productList');
     productList.innerHTML = 'Loading products...';
 
-    // Listen for real-time changes to the 'products' node
-    productsRef.on('value', (snapshot) => {
-        const productData = snapshot.val();
+    // Listen for real-time changes to the 'products' collection
+    productsCollection.onSnapshot(snapshot => {
         products = [];
         productList.innerHTML = '';
         
-        if (productData) {
-            // Convert Firebase object structure to a local array
-            Object.keys(productData).forEach(key => {
-                // Store the Firebase key (required for updates/removals)
-                products.push({ ...productData[key], firebaseKey: key }); 
-            });
-        }
+        snapshot.forEach(doc => {
+            // Get data and the unique Firestore document ID (required for updates/removals)
+            products.push({ ...doc.data(), firebaseKey: doc.id }); 
+        });
 
         // --- RENDER PRODUCTS ---
         if (products.length === 0) {
@@ -59,10 +51,12 @@ function displayProducts() {
             productList.appendChild(productCard);
         });
 
-        // Update the admin panel list if admin is logged in
         if (adminLoggedIn) {
             displayAdminProducts();
         }
+    }, error => {
+        console.error("Firestore error loading products:", error);
+        productList.innerHTML = `<p style="color: red;">Error loading products: ${error.message}</p>`;
     });
 }
 
@@ -70,7 +64,7 @@ function displayProducts() {
 // --- ADMIN FUNCTIONS ---
 
 /**
- * Adds a new product to Firebase, including the adminKey to pass security rules.
+ * Adds a new product using Firestore's .add() method.
  */
 function addProduct() {
     const name = document.getElementById('productName').value;
@@ -93,7 +87,8 @@ function addProduct() {
         adminKey: ADMIN_PASSWORD 
     };
 
-    productsRef.push(newProduct)
+    // Use .add() to create a new document with an auto-generated ID
+    productsCollection.add(newProduct)
         .then(() => {
             alert("Product Added Successfully!");
             clearAdminForm();
@@ -118,15 +113,14 @@ function displayAdminProducts() {
 
     products.forEach((product) => {
         const option = document.createElement('option');
-        option.value = product.firebaseKey; // Use Firebase Key as the value
+        option.value = product.firebaseKey; // Use Firestore document ID as the value
         option.textContent = `${product.name} (Stock: ${product.stock})`;
         select.appendChild(option);
     });
 }
 
 /**
- * CORRECTED: Removes a product by sending a NULL update to the parent node,
- * including the adminKey for security compliance.
+ * Removes a product using Firestore's .delete() method.
  */
 function removeProduct() {
     const firebaseKey = document.getElementById('productSelect').value;
@@ -134,17 +128,16 @@ function removeProduct() {
         alert("Please select a product to remove.");
         return;
     }
-
-    const deletionPayload = {
-        [firebaseKey]: null, // Set the specific key to null to delete it
-        adminKey: ADMIN_PASSWORD // Include the admin key to pass the write rule
-    };
-
-    productsRef.update(deletionPayload)
+    
+    // Use .doc(key).delete() to remove the document
+    productsCollection.doc(firebaseKey).delete()
         .then(() => {
             alert(`Product removed successfully!`);
         })
         .catch(error => {
+            // Note: If deletion fails due to the security rule, you would need to adjust the rule 
+            // to allow 'delete' separately, or ensure the adminKey is somehow included.
+            // We use a simplified rule that allows 'write' which covers delete.
             console.error("Error removing product:", error);
             alert("Error removing product. Check console.");
         });
@@ -170,7 +163,7 @@ function loadProductForEdit() {
 }
 
 /**
- * Saves edited product data by updating Firebase.
+ * Saves edited product data by updating Firestore using .update().
  */
 function saveProductChanges() {
     const firebaseKey = document.getElementById('productSelect').value;
@@ -194,8 +187,9 @@ function saveProductChanges() {
         const existingProduct = products.find(p => p.firebaseKey === firebaseKey);
         updatedData.imageUrl = existingProduct ? existingProduct.imageUrl : "https://via.placeholder.com/250x150?text=No+Image";
     }
-
-    productsRef.child(firebaseKey).update(updatedData)
+    
+    // Use .update() on the specific document
+    productsCollection.doc(firebaseKey).update(updatedData)
         .then(() => {
             alert("Product Updated Successfully!");
         })
@@ -224,7 +218,7 @@ function clearAdminForm() {
 // --- CART & CUSTOMER FUNCTIONS ---
 
 /**
- * Adds an item to the local cart and updates the stock in Firebase.
+ * Adds an item to the local cart and updates the stock in Firestore.
  */
 function addToCart(firebaseKey) {
     const product = products.find(p => p.firebaseKey === firebaseKey);
@@ -246,8 +240,8 @@ function addToCart(firebaseKey) {
         });
     }
 
-    // Update stock in Firebase (sends adminKey to pass rule)
-    productsRef.child(firebaseKey).update({ 
+    // Update stock in Firestore (sends adminKey to pass rule)
+    productsCollection.doc(firebaseKey).update({ 
         stock: product.stock - 1,
         adminKey: ADMIN_PASSWORD
     }); 
@@ -256,7 +250,7 @@ function addToCart(firebaseKey) {
 }
 
 /**
- * Removes an item from the local cart and returns the stock to Firebase.
+ * Removes an item from the local cart and returns the stock to Firestore.
  */
 function removeFromCart(firebaseKey) {
     const itemIndex = cart.findIndex(item => item.firebaseKey === firebaseKey);
@@ -264,9 +258,9 @@ function removeFromCart(firebaseKey) {
         const item = cart[itemIndex];
         const product = products.find(p => p.firebaseKey === firebaseKey);
 
-        // Return stock in Firebase (sends adminKey to pass rule)
+        // Return stock in Firestore (sends adminKey to pass rule)
         if (product) {
-            productsRef.child(firebaseKey).update({
+            productsCollection.doc(firebaseKey).update({
                 stock: product.stock + item.qty,
                 adminKey: ADMIN_PASSWORD
             });
@@ -378,7 +372,6 @@ function printCart() {
         printWindow.close();
     };
 
-    // After printing, clear the cart 
     cart = [];
     updateCartSidebar();
 }
@@ -386,7 +379,6 @@ function printCart() {
 
 // --- ADMIN LOGIN ---
 
-// Admin Login (remains local)
 function adminLogin() {
     const pass = document.getElementById('adminPassword').value;
     if (pass === ADMIN_PASSWORD) {
@@ -403,5 +395,4 @@ function adminLogin() {
 
 // --- INITIALIZATION ---
 
-// Start the app by loading products from Firebase
 displayProducts();
