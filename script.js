@@ -332,27 +332,33 @@ function printCart() {
 
 // --- ADMIN LOGIN FIX ---
 
+// --- ADMIN LOGIN ---
+
 /**
- * FIXED: Ensures displayProducts is called to update the Admin select dropdown.
+ * Handles the administrator login logic.
+ * The authentication check is local (password must match ADMIN_PASSWORD constant).
+ * If successful, it enables the admin panel and refreshes the product list.
  */
 function adminLogin() {
-    const pass = document.getElementById('adminPassword').value;
+    const passwordField = document.getElementById('adminPassword');
+    const pass = passwordField.value;
+
     if (pass === ADMIN_PASSWORD) {
+        // Successful Login
         adminLoggedIn = true;
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'grid';
-        document.getElementById('adminPassword').value = ''; 
+        passwordField.value = ''; // Clear the password field
+
+        // CRITICAL STEP: Refresh the display to load products and populate the admin dropdown
+        displayProducts(); 
         
-        // --- THE CRITICAL FIX ---
-        displayProducts(); // Forces a refresh, which calls displayAdminProducts()
-        // ------------------------
+        console.log("Admin logged in successfully.");
 
     } else {
-        alert("Incorrect password!");
+        // Failed Login
+        alert("Incorrect password! Please try again.");
+        passwordField.value = ''; // Clear the input field after failure
+        passwordField.focus(); // Keep focus on the field for quick retry
     }
 }
-
-
-// --- INITIALIZATION ---
-
-displayProducts();
