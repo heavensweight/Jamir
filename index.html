@@ -3,96 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMIR TRADING - Cow Food Store</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>Jamir Trading - Cow Food Shop</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Header Section -->
     <header>
-        <h1>JAMIR TRADING</h1>
-        <button onclick="toggleCart()">🛒 Cart</button>
+        <h1>Welcome to Jamir Trading!</h1>
+        <p>Your one-stop shop for quality cow food products.</p>
     </header>
 
-    <main>
-        <section id="customerView">
-            <h2>Available Products</h2>
-            <div id="productList" class="product-grid">
-                </div>
-        </section>
+    <div class="container">
 
-        <section id="adminLogin" class="admin-section">
-            <h2>Admin Login</h2>
-            <input type="password" id="adminPassword" placeholder="Enter Admin Password">
+        <h2>Our Products</h2>
+        <div class="products" id="productList"></div>
+
+        <!-- Admin Login -->
+        <div id="adminLogin" class="admin-login">
+            <h3>Admin Login</h3>
+            <input type="password" id="adminPassword" placeholder="Enter password" />
             <button onclick="adminLogin()">Login</button>
-        </section>
+        </div>
 
-        <section id="adminPanel" class="admin-section" style="display: none;">
-            <h2>Admin Management</h2>
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="admin-panel" style="display: none;">
+            <h3>Admin Panel</h3>
+            <input type="text" id="productName" placeholder="Product Name" />
+            <input type="number" id="productPrice" placeholder="Price" />
+            <input type="number" id="productStock" placeholder="Stock" />
+            <input type="file" id="productImage" accept="image/*" onchange="previewImage(event)" />
+            <img id="imagePreview" class="image-preview" src="" alt="Image Preview" />
 
-            <div class="admin-grid">
-                <div class="admin-card">
-                    <h3>Load/Remove Product</h3>
-                    <select id="productSelect"></select>
-                    <button onclick="loadProductForEdit()">Load for Edit</button>
-                    <button onclick="removeProduct()">Remove Selected</button>
-                </div>
+            <button onclick="addProduct()">Add Product</button>
+            <hr />
 
-                <div class="admin-card">
-                    <h3>Add/Edit Product</h3>
-                    <label for="productName">Name:</label>
-                    <input type="text" id="productName">
+            <h3>Edit or Remove Products</h3>
+            <select id="productSelect"></select>
 
-                    <label for="productPrice">Price ($):</label>
-                    <input type="number" id="productPrice" step="0.01">
+            <button onclick="removeProduct()">Remove Product</button>
+            <button onclick="loadProductForEdit()">Edit Product</button>
+            <button onclick="saveProductChanges()">Save Changes</button>
+        </div>
 
-                    <label for="productStock">Stock (Bags):</label>
-                    <input type="number" id="productStock" step="1">
+        <!-- Cart -->
+        <div id="cartSidebar">
+            <h3>Your Cart</h3>
+            <div id="cartItemsList"></div>
+            <button onclick="printCart()">Print Cart</button>
+            <button onclick="toggleCart()">Close Cart</button>
+        </div>
 
-                    <label for="productImage">Image:</label>
-                    <input type="file" id="productImage" onchange="previewImage(event)">
-                    
-                    <img id="imagePreview" src="" alt="Image Preview" style="max-width: 150px; margin-top: 10px;">
-                    
-                    <button onclick="addProduct()">Add New Product</button>
-                    <button onclick="saveProductChanges()">Save Changes</button>
-                    <button onclick="clearAdminForm()">Clear Form</button>
-                </div>
-            </div>
-        </section>
-    </main>
+        <button id="openCartBtn" onclick="toggleCart()">View Cart</button>
 
-    <div id="cartSidebar" class="sidebar">
-        <button class="close-btn" onclick="toggleCart()">X</button>
-        <h3>Your Cart</h3>
-        <div id="cartItemsList">
-            </div>
-        <button onclick="printCart()">Checkout & Print Receipt</button>
+        <div class="added-to-cart-message" id="addedToCartMessage">
+            Product added to cart!
+        </div>
+
     </div>
 
-    <div id="addedToCartMessage" class="message">Product added to cart!</div>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Jamir Trading | All rights reserved</p>
+    </footer>
 
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore, collection } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-        // Your specific project configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBI4kJYYrSrOTYQ1hp1kuNonk992EAugH4",
-            authDomain: "jamir-90f6a.firebaseapp.com",
-            projectId: "jamir-90f6a",
-            storageBucket: "jamir-90f6a.firebasestorage.app",
-            messagingSenderId: "517956156662",
-            appId: "1:517956156662:web:edf55c8ec5083149d0c0d7",
-            measurementId: "G-NFKQTL3X55"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        // Expose necessary Firestore objects globally for script.js
-        window.db = getFirestore(app);
-        window.productsCollection = collection(window.db, 'products'); 
-    </script>
-    
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
