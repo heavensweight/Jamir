@@ -1,306 +1,148 @@
-/* =====================================================
-   POLISHED & RESPONSIVE CSS (style.css)
-===================================================== */
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f8f8;
-    color: #333;
-    line-height: 1.6;
+    background-color: #f4f4f9;
 }
-
 header {
-    background-color: #004d40; /* Dark Teal */
+    background-color: #007A3D;
     color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 1.8em;
-}
-
-header button {
-    background-color: #ff9800; /* Orange Accent */
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-header button:hover {
-    background-color: #e68900;
-}
-
-main {
+    text-align: center;
     padding: 20px;
-    max-width: 1200px;
+}
+.container {
+    width: 90%;
     margin: 0 auto;
 }
-
-h2 {
-    color: #004d40;
-    border-bottom: 2px solid #b2dfdb;
-    padding-bottom: 5px;
-    margin-bottom: 25px;
-    font-weight: 600;
-}
-
-/* --- Product Grid --- */
-.product-grid {
+.products, .admin-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
-}
-
-.product-card {
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
-}
-
-.product-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-}
-
-.product-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.price {
-    font-size: 1.3em;
-    color: #4CAF50;
-    font-weight: bold;
-    margin: 8px 0;
-}
-
-.stock {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 15px;
-}
-
-.product-card button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 100%;
-}
-
-.product-card button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-.product-card button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* --- Admin Sections --- */
-.admin-section {
     margin-top: 30px;
-    padding: 30px;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
-
-.admin-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 30px;
-}
-
-.admin-card {
+.product-card, .admin-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    border: 1px dashed #bdbdbd;
-    border-radius: 5px;
+    text-align: center;
 }
-
-.admin-card h3 {
-    color: #004d40;
-    margin-top: 0;
+.product-card img, .admin-card img {
+    width: 100%;
+    border-radius: 8px;
 }
-
-.admin-card label {
-    display: block;
-    margin-top: 10px;
+.product-card h2, .admin-card h2 {
+    font-size: 20px;
+    color: #333;
+    margin-top: 15px;
+}
+.price {
+    font-size: 18px;
+    color: #28a745;
     font-weight: bold;
 }
-
-.admin-card input:not([type="file"]), .admin-card select, .admin-card button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0 15px 0;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.admin-card button {
+.stock {
+    font-size: 14px;
+    color: #dc3545;
     margin-top: 10px;
-    background-color: #28a745; /* Success Green */
+}
+footer {
+    background-color: #007A3D;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 40px;
+}
+.admin-panel {
+    margin-top: 30px;
+}
+.admin-panel input, .admin-panel select {
+    padding: 8px;
+    margin: 5px;
+    width: 80%;
+}
+.admin-panel button {
+    background-color: #007A3D;
     color: white;
     border: none;
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
+}
+.admin-panel button:hover {
+    background-color: #005c2b;
+}
+.image-preview {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 
-.admin-card button:hover {
-    background-color: #1e7e34;
-}
-
-/* Special button colors for clarity */
-.admin-card button:nth-of-type(2) { /* Load for Edit/Remove */
-    background-color: #6c757d;
-}
-.admin-card button:nth-of-type(2):hover {
-    background-color: #5a6268;
-}
-.admin-card button:last-of-type { /* Clear/Remove */
-    background-color: #dc3545; /* Danger Red */
-}
-.admin-card button:last-of-type:hover {
-    background-color: #c82333;
-}
-
-
-/* --- Sidebar Styling --- */
-.sidebar {
-    height: 100%;
-    width: 0;
+/* Cart Sidebar */
+#cartSidebar {
     position: fixed;
-    z-index: 10;
     top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100%;
+    background-color: white;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: right 0.3s ease-in-out;
+}
+#cartSidebar.open {
     right: 0;
-    background-color: #fefefe;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-    border-left: 2px solid #ccc;
-    box-shadow: -6px 0 15px rgba(0,0,0,0.15);
 }
-
-.sidebar.open {
-    width: 320px;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.close-btn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-    background: none;
-    border: none;
-    cursor: pointer;
+#cartSidebar h3 {
+    margin-top: 0;
+    text-align: center;
     color: #333;
 }
-
-#cartItemsList {
-    margin-top: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #ccc;
-}
-
 .cart-item {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dotted #eee;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .cart-item button {
-    padding: 5px 10px;
     background-color: #dc3545;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 5px;
     cursor: pointer;
-    margin-left: 10px;
+    border-radius: 5px;
+}
+#openCartBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007A3D;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 /* Added to Cart Message */
-#addedToCartMessage {
-    visibility: hidden;
-    min-width: 250px;
-    background-color: #004d40;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 16px;
+.added-to-cart-message {
     position: fixed;
-    z-index: 11;
-    right: 30px;
-    bottom: 30px;
-    font-size: 17px;
+    top: 10px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    display: none;
     opacity: 0;
-    transition: visibility 0s, opacity 0.5s linear;
+    transition: opacity 0.5s ease-out;
 }
-
-#addedToCartMessage.show {
-    visibility: visible;
+.added-to-cart-message.show {
+    display: block;
     opacity: 1;
-}
-
-/* =====================================================
-   RESPONSIVENESS (Media Queries)
-===================================================== */
-
-/* Tablets and small desktops */
-@media (max-width: 992px) {
-    .admin-grid {
-        grid-template-columns: 1fr; /* Stack the admin cards vertically */
-    }
-}
-
-/* Mobile Phones */
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 1.4em;
-    }
-
-    header {
-        padding: 10px;
-    }
-    
-    main {
-        padding: 10px;
-    }
-    
-    .product-grid {
-        grid-template-columns: 1fr; /* Single column view on small screens */
-    }
-
-    .sidebar.open {
-        width: 100%; /* Cart takes full width on mobile */
-        padding-left: 10px;
-        padding-right: 10px;
-    }
 }
