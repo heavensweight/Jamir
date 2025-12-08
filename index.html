@@ -32,6 +32,7 @@
             <input type="text" id="productName" placeholder="Product Name" />
             <input type="number" id="productPrice" placeholder="Price" />
             <input type="number" id="productStock" placeholder="Stock" />
+            <textarea id="productDetails" placeholder="Product Details"></textarea>
             <input type="file" id="productImage" accept="image/*" onchange="previewImage(event)" />
             <img id="imagePreview" class="image-preview" src="" alt="Image Preview" />
 
@@ -44,6 +45,13 @@
             <button onclick="removeProduct()">Remove Product</button>
             <button onclick="loadProductForEdit()">Edit Product</button>
             <button onclick="saveProductChanges()">Save Changes</button>
+
+            <hr />
+            <h3>Orders Summary</h3>
+            <button onclick="viewOrders('day')">Today</button>
+            <button onclick="viewOrders('week')">This Week</button>
+            <button onclick="viewOrders('month')">This Month</button>
+            <div id="orderSummary"></div>
         </div>
 
         <!-- Cart -->
@@ -60,6 +68,23 @@
             Product added to cart!
         </div>
 
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDetailsModal()">&times;</span>
+            <div id="detailsContent"></div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReceiptModal()">&times;</span>
+            <pre id="receiptContent"></pre>
+            <button onclick="printReceipt()">Print Invoice</button>
+        </div>
     </div>
 
     <!-- Footer -->
