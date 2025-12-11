@@ -2,224 +2,284 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 header {
-    background-color: #007A3D;
+    background-color: #007A3D; /* Brand Primary Color */
     color: white;
-    text-align: center;
-    padding: 20px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.container {
-    width: 90%;
-    margin: 0 auto;
-}
-
-.products, .admin-panel {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.product-card, .admin-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-}
-
-.product-card img, .admin-card img {
-    width: 100%;
-    border-radius: 8px;
-}
-
-.product-card h2, .admin-card h2 {
-    font-size: 20px;
-    color: #333;
-    margin-top: 15px;
-}
-
-.price {
-    font-size: 18px;
-    color: #28a745;
+header .logo {
+    font-size: 1.5em;
     font-weight: bold;
 }
 
-.stock {
-    font-size: 14px;
-    color: #dc3545;
-    margin-top: 10px;
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
 }
 
-footer {
-    background-color: #007A3D;
-    color: white;
+h1 {
     text-align: center;
-    padding: 10px 0;
-    margin-top: 40px;
+    color: #004d9a;
+    margin-bottom: 30px;
 }
 
-.admin-panel {
-    margin-top: 30px;
+/* --- Product List --- */
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
 }
 
-.admin-panel input, .admin-panel select, .admin-panel textarea {
-    padding: 8px;
-    margin: 5px;
-    width: 80%;
+.product-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
 }
 
-.admin-panel textarea {
-    resize: vertical;
+.product-card:hover {
+    transform: translateY(-5px);
 }
 
-.admin-panel button {
+.product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.product-card h2 {
+    font-size: 1.2em;
+    margin: 0 0 10px;
+    color: #004d9a;
+}
+
+.product-card .price {
+    font-weight: bold;
+    color: #e67e22;
+    margin: 5px 0;
+}
+
+.product-card .stock {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.product-card button {
     background-color: #007A3D;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+
+.product-card button:hover:not(:disabled) {
+    background-color: #005f2c;
+}
+
+.product-card button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- Cart Sidebar --- */
+.cart-toggle-btn {
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.admin-panel button:hover {
-    background-color: #005c2b;
-}
-
-.image-preview {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-/* Cart Sidebar */
-#cartSidebar {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 70%;
+.cart-sidebar {
     height: 100%;
-    background-color: white;
-    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: right 0.3s ease-in-out;
-    overflow-y: auto;
+    width: 0;
+    position: fixed;
     z-index: 1000;
-}
-
-#cartSidebar.open {
+    top: 0;
     right: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
 }
 
-#cartSidebar h3 {
-    margin-top: 0;
-    text-align: center;
+.cart-sidebar.open {
+    width: 300px;
+    padding: 60px 20px 20px;
+}
+
+.cart-sidebar h2 {
+    color: #004d9a;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.cart-sidebar .close-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    background: none;
     color: #333;
 }
 
 .cart-item {
-    background-color: #f8f9fa;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px dashed #ddd;
+    padding: 10px 0;
 }
 
 .cart-item button {
     background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 0.8em;
 }
 
-#openCartBtn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #007A3D;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-/* Added to Cart Message */
-.added-to-cart-message {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    background-color: #28a745;
-    color: white;
+.checkout-btn {
+    width: 100%;
+    margin-top: 20px;
     padding: 15px;
-    border-radius: 5px;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease-out;
-    z-index: 1001;
+    font-size: 1.1em;
+    background-color: #004d9a !important;
 }
 
-.added-to-cart-message.show {
-    display: block;
-    opacity: 1;
-}
-
-/* Modals */
+/* --- Modals (General) --- */
 .modal {
     display: none;
     position: fixed;
-    z-index: 2000;
+    z-index: 2000; 
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto;
+    margin: 15% auto; 
     padding: 20px;
-    border-radius: 8px;
+    border: 1px solid #888;
     width: 80%;
-    max-width: 500px;
-    position: relative;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.modal-content button {
-    margin-top: 10px;
-    background-color: #007A3D;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.modal-content button:hover {
-    background-color: #005c2b;
-}
-
-.close {
+.modal-content .close {
     color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 20px;
+    float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
 }
 
-.close:hover {
-    color: black;
+/* --- Receipt Modal Specifics --- */
+.receipt-modal .modal-content {
+    max-width: 400px;
 }
+
+.receipt-modal pre {
+    white-space: pre;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #eee;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.receipt-buttons button {
+    padding: 10px 15px;
+    flex-grow: 1;
+    margin: 0 5px;
+}
+
+/* --- NEW SUCCESS MODAL STYLES --- */
+.success-modal {
+    /* Ensures it covers the whole screen */
+    display: none; 
+    position: fixed;
+    z-index: 3000; /* Higher than other modals */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Slightly transparent overlay */
+}
+
+.success-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Centering vertically */
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%; 
+    max-width: 300px; /* Small, focused pop-up */
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.success-modal-content h3 {
+    color: #007A3D;
+}
+
+.success-modal-content button {
+    margin-top: 15px;
+    padding: 10px 30px;
+    font-weight: bold;
+    background-color: #007A3D;
+    color: white;
+}
+
+/* --- Admin Panel Styles --- */
+.admin-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form input[type="password"],
+.admin-form textarea,
+.admin-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  box-sizing: border-box;
